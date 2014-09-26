@@ -21,6 +21,12 @@
 #   Default value: present
 #   This variable is optional
 #
+# [*version*]
+#   What the version of the plugin is being requested 
+#   Value type is string
+#   Default value: "" 
+#   This variable is optional
+#
 # [*url*]
 #   Specify an URL where to download the plugin from.
 #   Value type is string
@@ -47,6 +53,7 @@
 define elasticsearch::plugin(
     $module_dir,
     $ensure      = 'present',
+    $version     = '',
     $url         = ''
 ) {
 
@@ -68,12 +75,18 @@ define elasticsearch::plugin(
       fail("module_dir undefined for plugin ${name}")
   }
 
+  if ($version != '') {
+    $path = "${name}/${version}"
+  } else {
+    $path = $name
+  }
+
   if ($url != '') {
     validate_string($url)
     $install_cmd = "${elasticsearch::plugintool} -install ${name} -url ${url}"
     $exec_rets = [0,1]
   } else {
-    $install_cmd = "${elasticsearch::plugintool} -install ${name}"
+    $install_cmd = "${elasticsearch::plugintool} -install ${path}"
     $exec_rets = [0,]
   }
 
