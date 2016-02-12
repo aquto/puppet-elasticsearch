@@ -83,10 +83,10 @@ define elasticsearch::plugin(
 
   if ($url != '') {
     validate_string($url)
-    $install_cmd = "${elasticsearch::plugintool} -install ${name} -url ${url}"
+    $install_cmd = "${elasticsearch::plugintool} install ${url}"
     $exec_rets = [0,1]
   } else {
-    $install_cmd = "${elasticsearch::plugintool} -install ${path}"
+    $install_cmd = "${elasticsearch::plugintool} install ${path}"
     $exec_rets = [0,]
   }
 
@@ -101,7 +101,7 @@ define elasticsearch::plugin(
     }
     default: {
       exec {"remove-plugin-${name}":
-        command => "${elasticsearch::plugintool} --remove ${module_dir}",
+        command => "${elasticsearch::plugintool} remove ${module_dir}",
         onlyif  => "test -d ${elasticsearch::plugindir}/${module_dir}",
         notify  => $notify_elasticsearch,
       }
